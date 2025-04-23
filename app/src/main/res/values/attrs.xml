@@ -14,5 +14,14 @@
         <attr name="tabTextSize" format="dimension" />
         <!-- Tab项间距 -->
         <attr name="tabItemSpacing" format="dimension" />
+        <!-- 指示器边距 -->
+        <attr name="indicatorMargin" format="dimension" />
+        <!-- 指示器位置 -->
+        <attr name="indicatorPosition" format="enum">
+            <!-- 显示在Tab项下方 -->
+            <enum name="bottom" value="0" />
+            <!-- 显示在Tab项上方 -->
+            <enum name="top" value="1" />
+        </attr>
     </declare-styleable>
 </resources> 

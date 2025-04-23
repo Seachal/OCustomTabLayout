@@ -7,4 +7,7 @@
     <!-- 指示器尺寸 -->
     <dimen name="default_indicator_width">24dp</dimen>
     <dimen name="default_indicator_height">16dp</dimen>
+    
+    <!-- 指示器边距 -->
+    <dimen name="indicator_margin">4dp</dimen>
 </resources> 

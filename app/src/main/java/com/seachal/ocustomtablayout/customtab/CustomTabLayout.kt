@@ -24,6 +24,12 @@ class CustomTabLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    // 指示器位置常量
+    companion object {
+        const val INDICATOR_POSITION_BOTTOM = 0
+        const val INDICATOR_POSITION_TOP = 1
+    }
+
     // RecyclerView用于水平排列各个Tab项
     private val recyclerView = RecyclerView(context)
     
@@ -60,6 +66,9 @@ class CustomTabLayout @JvmOverloads constructor(
     // Tab项间距
     private var tabItemSpacing = 0
     
+    // 指示器位置，默认在底部
+    private var indicatorPosition = INDICATOR_POSITION_BOTTOM
+    
     init {
         // 解析自定义属性
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.CustomTabLayout)
@@ -71,6 +80,7 @@ class CustomTabLayout @JvmOverloads constructor(
             textSize = typedArray.getDimension(R.styleable.CustomTabLayout_tabTextSize, 
                 TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, textSize, resources.displayMetrics))
             tabItemSpacing = typedArray.getDimensionPixelSize(R.styleable.CustomTabLayout_tabItemSpacing, 0)
+            indicatorPosition = typedArray.getInt(R.styleable.CustomTabLayout_indicatorPosition, INDICATOR_POSITION_BOTTOM)
         } finally {
             typedArray.recycle()
         }
@@ -163,6 +173,35 @@ class CustomTabLayout @JvmOverloads constructor(
     }
     
     /**
+     * 设置指示器位置
+     * @param position 位置，可选值为INDICATOR_POSITION_BOTTOM或INDICATOR_POSITION_TOP
+     */
+    fun setIndicatorPosition(position: Int) {
+        if (position != INDICATOR_POSITION_BOTTOM && position != INDICATOR_POSITION_TOP) {
+            return
+        }
+        
+        if (indicatorPosition == position) {
+            return
+        }
+        
+        indicatorPosition = position
+        
+        // 重新创建指示器视图
+        if (indicatorView != null) {
+            removeView(indicatorView)
+            indicatorView = null
+            
+            if (indicatorLayoutResId != 0) {
+                setupIndicatorView()
+                post { updateIndicatorPosition(selectedPosition, false) }
+            } else {
+                setupDefaultIndicator()
+            }
+        }
+    }
+    
+    /**
      * 设置文本颜色
      */
     fun setTextColors(selectedColor: Int, unselectedColor: Int) {
@@ -210,8 +249,24 @@ class CustomTabLayout @JvmOverloads constructor(
         // 创建指示器视图
         indicatorView = LayoutInflater.from(context).inflate(indicatorLayoutResId, this, false)
         
-        // 添加指示器视图到布局，放在RecyclerView下方
-        addView(indicatorView, 0, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
+        // 添加指示器视图到布局，根据指示器位置决定添加的索引
+        val index = if (indicatorPosition == INDICATOR_POSITION_BOTTOM) 0 else 1
+        addView(indicatorView, index, LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT))
+        
+        // 根据指示器位置设置外边距
+        val layoutParams = indicatorView?.layoutParams as? MarginLayoutParams
+        layoutParams?.let {
+            // 如果指示器在顶部，增加上边距，清除下边距
+            // 如果指示器在底部，增加下边距，清除上边距
+            if (indicatorPosition == INDICATOR_POSITION_TOP) {
+                it.topMargin = resources.getDimensionPixelSize(R.dimen.indicator_margin)
+                it.bottomMargin = 0
+            } else {
+                it.topMargin = 0
+                it.bottomMargin = resources.getDimensionPixelSize(R.dimen.indicator_margin)
+            }
+            indicatorView?.layoutParams = it
+        }
         
         // 隐藏指示器，等待第一次位置更新
         indicatorView?.visibility = View.INVISIBLE
