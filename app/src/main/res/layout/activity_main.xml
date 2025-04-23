@@ -96,6 +96,7 @@
         app:unselectedTextColor="#333333"
         app:tabTextSize="16sp"
         app:tabItemSpacing="36dp"
+
         app:indicatorLayout="@layout/custom_indicator_sample"
         app:indicatorImageViewId="@id/advanced_indicator_image"
         app:indicatorPosition="bottom"/>
