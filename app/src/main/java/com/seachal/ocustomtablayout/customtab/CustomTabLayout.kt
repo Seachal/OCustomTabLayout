@@ -1,6 +1,5 @@
 package com.seachal.ocustomtablayout.customtab
 
-import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
@@ -8,12 +7,10 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.seachal.ocustomtablayout.R
@@ -32,9 +29,6 @@ class CustomTabLayout @JvmOverloads constructor(
     companion object {
         const val INDICATOR_POSITION_BOTTOM = 0
         const val INDICATOR_POSITION_TOP = 1
-
-        // 平滑动画时长
-        private const val ANIMATION_DURATION = 200L
     }
 
     // RecyclerView用于水平排列各个Tab项
@@ -42,9 +36,6 @@ class CustomTabLayout @JvmOverloads constructor(
     
     // 适配器
     private val adapter = TabAdapter()
-    
-    // 指示器视图，默认为null，可由用户自定义
-    private var indicatorView: View? = null
     
     // 指示器布局资源ID，默认为0（未设置）
     private var indicatorLayoutResId = 0
@@ -78,18 +69,6 @@ class CustomTabLayout @JvmOverloads constructor(
     
     // 指示器边距
     private var indicatorMargin = 0
-
-    // 当前指示器位置（左侧的X坐标）
-    private var currentIndicatorLeft = 0
-    
-    // 当前指示器右侧的X坐标
-    private var currentIndicatorRight = 0
-    
-    // 指示器平滑移动的动画
-    private var indicatorAnimator: ValueAnimator? = null
-
-    // 是否正在滚动
-    private var isScrolling = false
     
     init {
         // 设置为垂直布局
@@ -113,64 +92,21 @@ class CustomTabLayout @JvmOverloads constructor(
         }
         
         // 设置RecyclerView
-        val layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        recyclerView.layoutManager = layoutManager
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
         recyclerView.adapter = adapter
         recyclerView.itemAnimator = null // 禁用动画以提高性能
         recyclerView.setHasFixedSize(true) // 如果Tab大小固定，可以提高性能
+        
         if (tabItemSpacing > 0) {
             recyclerView.addItemDecoration(TabItemDecoration(tabItemSpacing))
         }
-        
-        // 添加RecyclerView滚动监听器
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                isScrolling = newState != RecyclerView.SCROLL_STATE_IDLE
-                // 当滚动状态变化时，确保指示器位置正确
-                updateIndicatorOnScroll()
-            }
-            
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                // 当RecyclerView滚动时，立即更新指示器位置
-                updateIndicatorOnScroll()
-            }
-        })
         
         // 设置硬件加速以提高渲染性能
         setLayerType(LAYER_TYPE_HARDWARE, null)
         recyclerView.setLayerType(LAYER_TYPE_HARDWARE, null)
         
-        // 组织布局结构
-        setupLayout()
-    }
-    
-    /**
-     * 组织布局结构
-     */
-    private fun setupLayout() {
-        // 移除所有子视图
-        removeAllViews()
-        
-        // 根据指示器位置安排布局顺序
-        if (indicatorPosition == INDICATOR_POSITION_TOP) {
-            // 先添加指示器，再添加RecyclerView
-            if (indicatorLayoutResId != 0) {
-                setupIndicatorView()
-                addView(indicatorView)
-            }
-            addView(recyclerView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
-        } else {
-            // 先添加RecyclerView，再添加指示器
-            addView(recyclerView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
-            if (indicatorLayoutResId != 0) {
-                setupIndicatorView()
-                addView(indicatorView)
-            } else {
-                setupDefaultIndicator()
-            }
-        }
+        // 添加RecyclerView到布局
+        addView(recyclerView, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT))
     }
     
     /**
@@ -184,7 +120,7 @@ class CustomTabLayout @JvmOverloads constructor(
         
         // 默认选中第一项
         if (tabItems.isNotEmpty() && selectedPosition == 0) {
-            post { updateIndicatorPosition(0, false) }
+            selectTab(0, false)
         }
     }
     
@@ -198,12 +134,16 @@ class CustomTabLayout @JvmOverloads constructor(
             val previousPosition = selectedPosition
             selectedPosition = position
             
-            // 更新Tab项UI
+            // 确保目标Tab可见
+            if (smoothScroll) {
+                recyclerView.smoothScrollToPosition(position)
+            } else {
+                recyclerView.scrollToPosition(position)
+            }
+            
+            // 更新Tab项UI - 只需要更新变化的项
             adapter.notifyItemChanged(previousPosition)
             adapter.notifyItemChanged(selectedPosition)
-            
-            // 更新指示器位置
-            updateIndicatorPosition(selectedPosition, smoothScroll)
             
             // 回调监听器
             onTabSelectedListener?.onTabSelected(selectedPosition)
@@ -228,11 +168,8 @@ class CustomTabLayout @JvmOverloads constructor(
         indicatorLayoutResId = layoutResId
         indicatorImageViewId = imageViewId
         
-        // 重新组织布局
-        setupLayout()
-        
-        // 更新指示器位置
-        post { updateIndicatorPosition(selectedPosition, false) }
+        // 更新所有Tab项
+        adapter.notifyDataSetChanged()
     }
     
     /**
@@ -250,11 +187,8 @@ class CustomTabLayout @JvmOverloads constructor(
         
         indicatorPosition = position
         
-        // 重新组织布局
-        setupLayout()
-        
-        // 更新指示器位置
-        post { updateIndicatorPosition(selectedPosition, false) }
+        // 更新所有Tab项
+        adapter.notifyDataSetChanged()
     }
     
     /**
@@ -288,142 +222,24 @@ class CustomTabLayout @JvmOverloads constructor(
     }
     
     /**
-     * 设置默认指示器
-     */
-    private fun setupDefaultIndicator() {
-        indicatorLayoutResId = R.layout.default_tab_indicator
-        indicatorImageViewId = R.id.default_indicator_image
-        setupIndicatorView()
-        addView(indicatorView)
-    }
-    
-    /**
-     * 设置指示器视图
-     */
-    private fun setupIndicatorView() {
-        if (indicatorLayoutResId == 0) return
-        
-        // 创建指示器视图
-        indicatorView = LayoutInflater.from(context).inflate(indicatorLayoutResId, this, false)
-        
-        // 设置指示器边距
-        val layoutParams = LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
-        if (indicatorPosition == INDICATOR_POSITION_TOP) {
-            layoutParams.setMargins(0, indicatorMargin, 0, 0)
-        } else {
-            layoutParams.setMargins(0, 0, 0, indicatorMargin)
-        }
-        indicatorView?.layoutParams = layoutParams
-        
-        // 启用硬件加速以提高渲染性能
-        indicatorView?.setLayerType(LAYER_TYPE_HARDWARE, null)
-        
-        // 隐藏指示器，等待第一次位置更新
-        indicatorView?.visibility = View.INVISIBLE
-    }
-    
-    /**
-     * 当RecyclerView滚动时更新指示器位置
-     */
-    private fun updateIndicatorOnScroll() {
-        if (tabItems.isEmpty() || indicatorView == null) return
-        
-        // 获取当前选中的Tab
-        val targetView = recyclerView.findViewHolderForAdapterPosition(selectedPosition)?.itemView ?: return
-        
-        // 获取该Tab在屏幕上的位置
-        val targetRect = Rect()
-        targetView.getGlobalVisibleRect(targetRect)
-        
-        // 获取RecyclerView在屏幕中的位置
-        val recyclerViewRect = Rect()
-        recyclerView.getGlobalVisibleRect(recyclerViewRect)
-        
-        // 计算指示器居中位置
-        val targetCenterX = targetRect.left + targetView.width / 2 - recyclerViewRect.left
-        
-        // 设置指示器位置 - 立即更新，不使用动画
-        indicatorView?.apply {
-            // 如果用户提供了指示器ImageView的ID，则使用ImageView居中
-            if (indicatorImageViewId != 0) {
-                val imageView = findViewById<ImageView>(indicatorImageViewId)
-                if (imageView != null) {
-                    val indicatorLeft = targetCenterX - imageView.width / 2
-                    val lp = layoutParams as MarginLayoutParams
-                    lp.leftMargin = indicatorLeft
-                    ViewCompat.setTranslationX(this, 0f) // 确保没有额外的平移
-                    layoutParams = lp
-                    visibility = View.VISIBLE
-                }
-            } else {
-                // 否则整个指示器视图居中
-                val indicatorLeft = targetCenterX - width / 2
-                val lp = layoutParams as MarginLayoutParams
-                lp.leftMargin = indicatorLeft
-                ViewCompat.setTranslationX(this, 0f) // 确保没有额外的平移
-                layoutParams = lp
-                visibility = View.VISIBLE
-            }
-        }
-    }
-    
-    /**
-     * 更新指示器位置
-     */
-    private fun updateIndicatorPosition(position: Int, smoothScroll: Boolean) {
-        if (tabItems.isEmpty() || indicatorView == null) return
-        
-        // 取消正在进行的动画
-        indicatorAnimator?.cancel()
-        
-        // 确保目标Tab可见
-        if (smoothScroll) {
-            recyclerView.smoothScrollToPosition(position)
-        } else {
-            recyclerView.scrollToPosition(position)
-        }
-        
-        // 直接更新指示器位置，不等待下一帧
-        updateIndicatorOnScroll()
-        
-        // 如果需要，在下一帧再次更新位置（以防Tab尚未完全加载）
-        post { updateIndicatorOnScroll() }
-    }
-    
-    /**
-     * 平滑移动指示器到指定位置
-     */
-    private fun animateIndicator(targetLeft: Int) {
-        // 获取当前位置
-        val lp = indicatorView?.layoutParams as? MarginLayoutParams ?: return
-        val currentLeft = lp.leftMargin
-        
-        // 如果正在滚动，不使用动画，直接设置位置
-        if (isScrolling) {
-            lp.leftMargin = targetLeft
-            indicatorView?.layoutParams = lp
-            return
-        }
-        
-        // 创建动画
-        indicatorAnimator = ValueAnimator.ofInt(currentLeft, targetLeft).apply {
-            duration = ANIMATION_DURATION
-            interpolator = DecelerateInterpolator()
-            addUpdateListener { animator ->
-                val value = animator.animatedValue as Int
-                lp.leftMargin = value
-                indicatorView?.layoutParams = lp
-            }
-            start()
-        }
-    }
-    
-    /**
      * Tab适配器
      */
     private inner class TabAdapter : RecyclerView.Adapter<TabViewHolder>() {
         
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TabViewHolder {
+            // 创建包含文本和指示器的Tab项布局
+            val tabItemLayout = LinearLayout(parent.context).apply {
+                orientation = LinearLayout.VERTICAL
+                layoutParams = ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                
+                // 启用硬件加速
+                setLayerType(LAYER_TYPE_HARDWARE, null)
+            }
+            
+            // 创建文本视图
             val textView = TextView(parent.context).apply {
                 setPadding(
                     resources.getDimensionPixelSize(R.dimen.tab_padding_horizontal),
@@ -432,19 +248,91 @@ class CustomTabLayout @JvmOverloads constructor(
                     resources.getDimensionPixelSize(R.dimen.tab_padding_vertical)
                 )
                 textSize = this@CustomTabLayout.textSize / resources.displayMetrics.scaledDensity
+                layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                gravity = android.view.Gravity.CENTER
                 
-                // 启用硬件加速以提高渲染性能
+                // 启用硬件加速
                 setLayerType(LAYER_TYPE_HARDWARE, null)
             }
-            return TabViewHolder(textView)
+            
+            // 根据指示器位置，决定添加顺序
+            if (indicatorPosition == INDICATOR_POSITION_TOP) {
+                // 创建指示器视图
+                val indicatorView = createIndicatorView(parent.context)
+                // 先添加指示器，再添加文本
+                tabItemLayout.addView(indicatorView)
+                tabItemLayout.addView(textView)
+            } else {
+                // 先添加文本，再添加指示器
+                tabItemLayout.addView(textView)
+                val indicatorView = createIndicatorView(parent.context)
+                tabItemLayout.addView(indicatorView)
+            }
+            
+            return TabViewHolder(tabItemLayout, textView)
+        }
+        
+        /**
+         * 创建指示器视图
+         */
+        private fun createIndicatorView(context: Context): View {
+            if (indicatorLayoutResId != 0) {
+                // 使用自定义指示器布局
+                return LayoutInflater.from(context).inflate(indicatorLayoutResId, null).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        if (indicatorPosition == INDICATOR_POSITION_TOP) {
+                            bottomMargin = indicatorMargin
+                        } else {
+                            topMargin = indicatorMargin
+                        }
+                        gravity = android.view.Gravity.CENTER
+                    }
+                    visibility = View.INVISIBLE // 默认隐藏
+                    
+                    // 启用硬件加速
+                    setLayerType(LAYER_TYPE_HARDWARE, null)
+                }
+            } else {
+                // 使用默认指示器
+                return LayoutInflater.from(context).inflate(R.layout.default_tab_indicator, null).apply {
+                    layoutParams = LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT
+                    ).apply {
+                        if (indicatorPosition == INDICATOR_POSITION_TOP) {
+                            bottomMargin = indicatorMargin
+                        } else {
+                            topMargin = indicatorMargin
+                        }
+                        gravity = android.view.Gravity.CENTER
+                    }
+                    visibility = View.INVISIBLE // 默认隐藏
+                    
+                    // 启用硬件加速
+                    setLayerType(LAYER_TYPE_HARDWARE, null)
+                }
+            }
         }
         
         override fun onBindViewHolder(holder: TabViewHolder, position: Int) {
-            val textView = holder.itemView as TextView
-            textView.text = tabItems[position]
-            textView.setTextColor(if (position == selectedPosition) selectedTextColor else unselectedTextColor)
+            // 设置文本
+            holder.textView.text = tabItems[position]
             
-            textView.setOnClickListener {
+            // 设置文本颜色
+            holder.textView.setTextColor(if (position == selectedPosition) selectedTextColor else unselectedTextColor)
+            
+            // 设置指示器可见性
+            val isSelected = position == selectedPosition
+            holder.getIndicatorView()?.visibility = if (isSelected) View.VISIBLE else View.INVISIBLE
+            
+            // 点击事件
+            holder.itemView.setOnClickListener {
                 selectTab(position)
             }
         }
@@ -455,7 +343,16 @@ class CustomTabLayout @JvmOverloads constructor(
     /**
      * Tab视图持有者
      */
-    private class TabViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    private inner class TabViewHolder(itemView: View, val textView: TextView) : RecyclerView.ViewHolder(itemView) {
+        /**
+         * 获取指示器视图
+         */
+        fun getIndicatorView(): View? {
+            val container = itemView as LinearLayout
+            val indicatorIndex = if (indicatorPosition == INDICATOR_POSITION_TOP) 0 else 1
+            return if (container.childCount > indicatorIndex) container.getChildAt(indicatorIndex) else null
+        }
+    }
     
     /**
      * Tab项间距装饰器
@@ -483,12 +380,5 @@ class CustomTabLayout @JvmOverloads constructor(
         while (itemDecorationCount > 0) {
             removeItemDecorationAt(0)
         }
-    }
-    
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        // 清理动画资源
-        indicatorAnimator?.cancel()
-        indicatorAnimator = null
     }
 } 
