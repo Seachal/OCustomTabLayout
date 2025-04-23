@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tab内边距 -->
+    <dimen name="tab_padding_horizontal">16dp</dimen>
+    <dimen name="tab_padding_vertical">12dp</dimen>
+    
+    <!-- 指示器尺寸 -->
+    <dimen name="default_indicator_width">24dp</dimen>
+    <dimen name="default_indicator_height">16dp</dimen>
+</resources> 

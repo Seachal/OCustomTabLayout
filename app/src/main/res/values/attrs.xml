@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 自定义TabLayout属性 -->
+    <declare-styleable name="CustomTabLayout">
+        <!-- 指示器布局资源ID -->
+        <attr name="indicatorLayout" format="reference" />
+        <!-- 指示器ImageView的ID -->
+        <attr name="indicatorImageViewId" format="reference" />
+        <!-- 选中项文本颜色 -->
+        <attr name="selectedTextColor" format="color" />
+        <!-- 未选中项文本颜色 -->
+        <attr name="unselectedTextColor" format="color" />
+        <!-- Tab文本大小 -->
+        <attr name="tabTextSize" format="dimension" />
+        <!-- Tab项间距 -->
+        <attr name="tabItemSpacing" format="dimension" />
+    </declare-styleable>
+</resources> 
