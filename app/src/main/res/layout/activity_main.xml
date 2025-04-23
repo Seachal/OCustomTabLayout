@@ -19,6 +19,16 @@
         android:textStyle="bold"
         android:gravity="center"
         android:background="@android:color/white"/>
+    
+    <!-- 切换指示器位置的按钮 -->
+    <Button
+        android:id="@+id/toggle_indicator_position"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="切换指示器到顶部"
+        android:textColor="@android:color/white"
+        android:background="#FF6B00"/>
         
     <!-- 使用默认指示器的CustomTabLayout -->
     <TextView
@@ -38,9 +48,9 @@
         android:paddingBottom="16dp"
         app:selectedTextColor="#FF6B00"
         app:unselectedTextColor="#333333"
-        app:indicatorPosition="bottom"
         app:tabTextSize="16sp"
-        app:tabItemSpacing="24dp"/>
+        app:tabItemSpacing="24dp"
+        app:indicatorPosition="bottom"/>
         
     <!-- 自定义弧形指示器的CustomTabLayout -->
     <TextView
@@ -63,7 +73,8 @@
         app:tabTextSize="16sp"
         app:tabItemSpacing="48dp"
         app:indicatorLayout="@layout/custom_arc_indicator"
-        app:indicatorImageViewId="@id/custom_indicator_image"/>
+        app:indicatorImageViewId="@id/custom_indicator_image"
+        app:indicatorPosition="bottom"/>
         
     <!-- 高级自定义指示器示例 -->
     <TextView
@@ -86,7 +97,8 @@
         app:tabTextSize="16sp"
         app:tabItemSpacing="36dp"
         app:indicatorLayout="@layout/custom_indicator_sample"
-        app:indicatorImageViewId="@id/advanced_indicator_image"/>
+        app:indicatorImageViewId="@id/advanced_indicator_image"
+        app:indicatorPosition="bottom"/>
         
     <!-- 内容区域用于显示选中的内容 -->
     <androidx.viewpager2.widget.ViewPager2

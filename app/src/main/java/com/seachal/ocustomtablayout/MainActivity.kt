@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
@@ -18,9 +19,22 @@ class MainActivity : AppCompatActivity() {
     // ViewPager2适配器
     private lateinit var pagerAdapter: PageAdapter
     
+    // 当前指示器位置 (默认底部)
+    private var currentIndicatorPosition = CustomTabLayout.INDICATOR_POSITION_BOTTOM
+
+    // TabLayout引用
+    private lateinit var defaultTabLayout: CustomTabLayout
+    private lateinit var customTabLayout: CustomTabLayout
+    private lateinit var advancedTabLayout: CustomTabLayout
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        
+        // 初始化TabLayout引用
+        defaultTabLayout = findViewById(R.id.default_tab_layout)
+        customTabLayout = findViewById(R.id.custom_tab_layout)
+        advancedTabLayout = findViewById(R.id.advanced_tab_layout)
         
         // 初始化ViewPager2
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
@@ -29,6 +43,37 @@ class MainActivity : AppCompatActivity() {
         
         // 设置Tab和ViewPager的联动
         setupTabs(viewPager)
+        
+        // 设置切换指示器位置的按钮
+        setupToggleButton()
+    }
+    
+    /**
+     * 设置切换指示器位置的按钮
+     */
+    private fun setupToggleButton() {
+        val toggleButton = findViewById<Button>(R.id.toggle_indicator_position)
+        toggleButton.setOnClickListener {
+            // 切换指示器位置
+            currentIndicatorPosition = if (currentIndicatorPosition == CustomTabLayout.INDICATOR_POSITION_BOTTOM) {
+                CustomTabLayout.INDICATOR_POSITION_TOP
+            } else {
+                CustomTabLayout.INDICATOR_POSITION_BOTTOM
+            }
+            
+            // 更新按钮文本
+            val newText = if (currentIndicatorPosition == CustomTabLayout.INDICATOR_POSITION_BOTTOM) {
+                "切换指示器到顶部"
+            } else {
+                "切换指示器到底部"
+            }
+            toggleButton.text = newText
+            
+            // 为所有TabLayout设置新的指示器位置
+            defaultTabLayout.setIndicatorPosition(currentIndicatorPosition)
+            customTabLayout.setIndicatorPosition(currentIndicatorPosition)
+            advancedTabLayout.setIndicatorPosition(currentIndicatorPosition)
+        }
     }
     
     /**
@@ -36,15 +81,12 @@ class MainActivity : AppCompatActivity() {
      */
     private fun setupTabs(viewPager: ViewPager2) {
         // 使用默认指示器的CustomTabLayout
-        val defaultTabLayout = findViewById<CustomTabLayout>(R.id.default_tab_layout)
         defaultTabLayout.setTabs(tabTitles)
         
         // 使用自定义弧形指示器的CustomTabLayout
-        val customTabLayout = findViewById<CustomTabLayout>(R.id.custom_tab_layout)
         customTabLayout.setTabs(tabTitles)
         
         // 使用高级自定义指示器的CustomTabLayout
-        val advancedTabLayout = findViewById<CustomTabLayout>(R.id.advanced_tab_layout)
         advancedTabLayout.setTabs(tabTitles)
         
         // 设置ViewPager页面变化监听
