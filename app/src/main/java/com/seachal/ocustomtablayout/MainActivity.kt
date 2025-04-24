@@ -59,8 +59,7 @@ class MainActivity : AppCompatActivity() {
         // 设置Tab和ViewPager的联动
         setupTabs(viewPager)
         
-        // 设置切换指示器位置的按钮
-        setupToggleButton()
+
         
         // 设置官方TabLayout
         setupOfficialTabLayout(viewPager)
@@ -279,33 +278,7 @@ class MainActivity : AppCompatActivity() {
         // 由于示例中没有该Activity，此处仅显示Toast
     }
 
-    /**
-     * 设置切换指示器位置的按钮
-     */
-    private fun setupToggleButton() {
-        val toggleButton = findViewById<Button>(R.id.toggle_indicator_position)
-        toggleButton.setOnClickListener {
-            // 切换指示器位置
-            currentIndicatorPosition = if (currentIndicatorPosition == CustomTabLayout.INDICATOR_POSITION_BOTTOM) {
-                CustomTabLayout.INDICATOR_POSITION_TOP
-            } else {
-                CustomTabLayout.INDICATOR_POSITION_BOTTOM
-            }
-            
-            // 更新按钮文本
-            val newText = if (currentIndicatorPosition == CustomTabLayout.INDICATOR_POSITION_BOTTOM) {
-                "切换指示器到顶部"
-            } else {
-                "切换指示器到底部"
-            }
-            toggleButton.text = newText
-            
-            // 为所有TabLayout设置新的指示器位置
-            defaultTabLayout.setIndicatorPosition(currentIndicatorPosition)
-            customTabLayout.setIndicatorPosition(currentIndicatorPosition)
-            advancedTabLayout.setIndicatorPosition(currentIndicatorPosition)
-        }
-    }
+
     
     /**
      * 设置Tab和ViewPager的联动

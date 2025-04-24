@@ -33,15 +33,7 @@
         android:gravity="center"
         android:background="@android:color/white"/>
 
-    <!-- 切换指示器位置的按钮 -->
-    <Button
-        android:id="@+id/toggle_indicator_position"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="切换指示器到顶部"
-        android:textColor="@android:color/white"
-        android:background="#FF6B00"/>
+ 
 
     <!-- 使用默认指示器的CustomTabLayout -->
     <TextView
