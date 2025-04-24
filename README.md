@@ -30,7 +30,7 @@
 </p>
 
 <p align="center">
-  <img src="art/preview.gif" width="300" alt="OCustomTabLayout Demo"/>
+  <img src="art/iShot_2025-04-24_10.24.36.gif"width="300" alt="OCustomTabLayout Demo"/>
 </p>
 
 ## Why OCustomTabLayout?
@@ -59,9 +59,7 @@ OCustomTabLayout is designed to solve the common issues with Android TabLayouts 
 ## Demo
 
 <p align="center">
-  <img src="art/demo1.png" width="200" alt="OCustomTabLayout Demo 1"/>
-  <img src="art/demo2.png" width="200" alt="OCustomTabLayout Demo 2"/>
-  <img src="art/demo3.png" width="200" alt="OCustomTabLayout Demo 3"/>
+  <img src="art/iShot_2025-04-24_10.24.36.gif"width="300" alt="OCustomTabLayout Demo"/>
 </p>
 
 ## Installation
