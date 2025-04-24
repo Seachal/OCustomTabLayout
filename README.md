@@ -254,9 +254,7 @@ OCustomTabLayout旨在解决Android TabLayout的常见问题，同时提供卓�
 ## 演示
 
 <p align="center">
-  <img src="art/demo1.png" width="200" alt="OCustomTabLayout 演示 1"/>
-  <img src="art/demo2.png" width="200" alt="OCustomTabLayout 演示 2"/>
-  <img src="art/demo3.png" width="200" alt="OCustomTabLayout 演示 3"/>
+  <img src="art/iShot_2025-04-24_10.24.36.gif" width="200" alt="OCustomTabLayout 演示 1"/>
 </p>
 
 ## 安装
