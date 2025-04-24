@@ -32,6 +32,7 @@ class MainActivity : AppCompatActivity() {
     
     // 官方TabLayout引用
     private lateinit var officialTabLayout: TabLayout
+    private lateinit var officialTabLayout2: TabLayout
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class MainActivity : AppCompatActivity() {
         customTabLayout = findViewById(R.id.custom_tab_layout)
         advancedTabLayout = findViewById(R.id.advanced_tab_layout)
         officialTabLayout = findViewById(R.id.official_tab_layout)
-        
+        officialTabLayout2 = findViewById(R.id.official_tab_layout2)
         // 初始化ViewPager2
         val viewPager = findViewById<ViewPager2>(R.id.view_pager)
         pagerAdapter = PageAdapter(tabTitles)
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
         
         // 设置官方TabLayout
         setupOfficialTabLayout(viewPager)
+        setupOfficialTabLayout2(viewPager)
     }
     
     /**
@@ -105,7 +107,53 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
-    
+
+
+    private fun setupOfficialTabLayout2(viewPager: ViewPager2) {
+        // 移除所有标签
+        officialTabLayout2.removeAllTabs()
+
+        // 使用TabLayoutMediator将TabLayout与ViewPager2连接
+        TabLayoutMediator(officialTabLayout2, viewPager) { tab, position ->
+            // 创建自定义视图
+            val customView = LayoutInflater.from(this).inflate(R.layout.t_item_tab_layout2, null)
+            val tabTextView = customView.findViewById<TextView>(R.id.t_tv_tab)
+            val tabImageView = customView.findViewById<ImageView>(R.id.t_iv_tab)
+
+            // 设置文本
+            tabTextView.text = tabTitles[position]
+
+            // 初始状态
+            val isSelected = position == viewPager.currentItem
+            tabImageView.visibility = if (isSelected) View.VISIBLE else View.INVISIBLE
+            tabTextView.setTextColor(if (isSelected) resources.getColor(R.color.tab_selected_color) else resources.getColor(R.color.tab_unselected_color))
+
+            // 设置自定义视图
+            tab.customView = customView
+        }.attach()
+
+        // 添加选项卡选择监听器
+        officialTabLayout2.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                // 显示选中标签的指示器
+                tab.customView?.findViewById<ImageView>(R.id.t_iv_tab)?.visibility = View.VISIBLE
+                // 修改选中项文本颜色
+                tab.customView?.findViewById<TextView>(R.id.t_tv_tab)?.setTextColor(resources.getColor(R.color.tab_selected_color))
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {
+                // 隐藏未选中标签的指示器
+                tab.customView?.findViewById<ImageView>(R.id.t_iv_tab)?.visibility = View.INVISIBLE
+                // 修改未选中项文本颜色
+                tab.customView?.findViewById<TextView>(R.id.t_tv_tab)?.setTextColor(resources.getColor(R.color.tab_unselected_color))
+            }
+
+            override fun onTabReselected(tab: TabLayout.Tab) {
+                // 重新选中标签时的操作
+            }
+        })
+    }
+
     /**
      * 设置切换指示器位置的按钮
      */

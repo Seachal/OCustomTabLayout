@@ -8,6 +8,19 @@
     android:background="#F8F8F8"
     tools:context=".MainActivity">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@mipmap/o_bg_top_big"
+        >
+
+
+
     <!-- 标题栏 -->
     <TextView
         android:layout_width="match_parent"
@@ -19,7 +32,7 @@
         android:textStyle="bold"
         android:gravity="center"
         android:background="@android:color/white"/>
-    
+
     <!-- 切换指示器位置的按钮 -->
     <Button
         android:id="@+id/toggle_indicator_position"
@@ -29,7 +42,7 @@
         android:text="切换指示器到顶部"
         android:textColor="@android:color/white"
         android:background="#FF6B00"/>
-        
+
     <!-- 使用默认指示器的CustomTabLayout -->
     <TextView
         android:layout_width="match_parent"
@@ -38,7 +51,7 @@
         android:text="默认指示器示例:"
         android:textSize="16sp"
         android:textColor="#333333"/>
-        
+
     <com.seachal.ocustomtablayout.customtab.CustomTabLayout
         android:id="@+id/default_tab_layout"
         android:layout_width="match_parent"
@@ -51,7 +64,7 @@
         app:tabTextSize="16sp"
         app:tabItemSpacing="24dp"
         app:indicatorPosition="bottom"/>
-        
+
     <!-- 自定义弧形指示器的CustomTabLayout -->
     <TextView
         android:layout_width="match_parent"
@@ -60,7 +73,7 @@
         android:text="自定义弧形指示器示例:"
         android:textSize="16sp"
         android:textColor="#333333"/>
-        
+
     <com.seachal.ocustomtablayout.customtab.CustomTabLayout
         android:id="@+id/custom_tab_layout"
         android:layout_width="match_parent"
@@ -75,7 +88,7 @@
         app:indicatorLayout="@layout/custom_arc_indicator"
         app:indicatorImageViewId="@id/custom_indicator_image"
         app:indicatorPosition="bottom"/>
-        
+
     <!-- 高级自定义指示器示例 -->
     <TextView
         android:layout_width="match_parent"
@@ -84,7 +97,7 @@
         android:text="高级自定义指示器示例(弧形+圆点):"
         android:textSize="16sp"
         android:textColor="#333333"/>
-        
+
     <com.seachal.ocustomtablayout.customtab.CustomTabLayout
         android:id="@+id/advanced_tab_layout"
         android:layout_width="match_parent"
@@ -99,7 +112,7 @@
         app:indicatorLayout="@layout/custom_indicator_sample"
         app:indicatorImageViewId="@id/advanced_indicator_image"
         app:indicatorPosition="bottom"/>
-        
+
     <!-- 官方TabLayout自定义Tab示例 -->
     <TextView
         android:layout_width="match_parent"
@@ -108,12 +121,12 @@
         android:text="官方TabLayout+自定义Tab示例:"
         android:textSize="16sp"
         android:textColor="#333333"/>
-        
+
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/official_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/white"
+        android:background="@android:color/transparent"
         app:tabGravity="fill"
         app:tabMode="scrollable"
         app:tabIndicator="@null"
@@ -121,7 +134,21 @@
         app:tabRippleColor="@null"
         android:paddingTop="12dp"
         android:paddingBottom="16dp"/>
-        
+
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/official_tab_layout2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            app:tabGravity="fill"
+            app:tabMode="scrollable"
+            app:tabIndicator="@null"
+            app:tabBackground="@null"
+            app:tabRippleColor="@null"
+            android:paddingTop="12dp"
+            android:paddingBottom="16dp"/>
+
     <!-- 内容区域用于显示选中的内容 -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
@@ -129,5 +156,6 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:layout_marginTop="16dp"/>
-
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout> 
