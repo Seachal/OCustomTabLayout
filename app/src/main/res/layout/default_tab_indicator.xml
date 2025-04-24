@@ -7,7 +7,7 @@
         android:id="@+id/default_indicator_image"
         android:layout_width="@dimen/default_indicator_width"
         android:layout_height="@dimen/default_indicator_height"
-        android:src="@mipmap/o_shape_tab_underline_png2"
+        android:src="@drawable/default_indicator"
         android:contentDescription="@null" />
 
 </FrameLayout> 

@@ -134,19 +134,42 @@ class CustomTabLayout @JvmOverloads constructor(
             val previousPosition = selectedPosition
             selectedPosition = position
             
-            // 确保目标Tab可见
-            if (smoothScroll) {
-                recyclerView.smoothScrollToPosition(position)
-            } else {
-                recyclerView.scrollToPosition(position)
-            }
-            
             // 更新Tab项UI - 只需要更新变化的项
             adapter.notifyItemChanged(previousPosition)
             adapter.notifyItemChanged(selectedPosition)
             
+            // 将选中的Tab滚动到屏幕中间位置
+            centerTabInScreen(position, smoothScroll)
+            
             // 回调监听器
             onTabSelectedListener?.onTabSelected(selectedPosition)
+        }
+    }
+    
+    /**
+     * 将指定位置的Tab滚动到屏幕的中间位置
+     * @param position Tab的位置
+     * @param smoothScroll 是否使用平滑滚动
+     */
+    private fun centerTabInScreen(position: Int, smoothScroll: Boolean) {
+        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+        
+        // 延迟执行以确保Tab项已经被测量
+        post {
+            // 获取选中Tab项的View
+            val tabView = layoutManager.findViewByPosition(position) ?: return@post
+            
+            // 计算Tab需要滚动的距离，使其居中
+            val tabCenter = (tabView.left + tabView.right) / 2
+            val screenCenter = width / 2
+            val scrollTo = tabCenter - screenCenter
+            
+            // 滚动RecyclerView
+            if (smoothScroll) {
+                recyclerView.smoothScrollBy(scrollTo, 0)
+            } else {
+                recyclerView.scrollBy(scrollTo, 0)
+            }
         }
     }
     

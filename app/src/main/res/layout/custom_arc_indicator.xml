@@ -7,7 +7,7 @@
         android:id="@+id/custom_indicator_image"
         android:layout_width="48dp"
         android:layout_height="12dp"
-        android:src="@drawable/arc_indicator"
+        android:src="@mipmap/o_shape_tab_underline_png2"
         android:contentDescription="@null" />
 
 </FrameLayout> 
