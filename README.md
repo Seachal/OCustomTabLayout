@@ -1,16 +1,16 @@
-# FlexTabber
+# OCustomTabLayout
 
 <p align="center">
-  <img src="art/logo.png" width="200" alt="FlexTabber Logo"/>
+  <img src="art/logo.png" width="200" alt="OCustomTabLayout Logo"/>
 </p>
 
 <p align="center">
-  <a href="https://github.com/seachal/FlexTabber/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/seachal/FlexTabber?style=social"></a>
-  <a href="https://github.com/seachal/FlexTabber/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/seachal/FlexTabber"></a>
-  <a href="https://github.com/seachal/FlexTabber/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/seachal/FlexTabber?style=social"></a>
-  <a href="https://github.com/seachal/FlexTabber/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/seachal/FlexTabber"></a>
+  <a href="https://github.com/seachal/OCustomTabLayout/stargazers"><img alt="GitHub stars" src="https://img.shields.io/github/stars/seachal/OCustomTabLayout?style=social"></a>
+  <a href="https://github.com/seachal/OCustomTabLayout/issues"><img alt="GitHub issues" src="https://img.shields.io/github/issues/seachal/OCustomTabLayout"></a>
+  <a href="https://github.com/seachal/OCustomTabLayout/network"><img alt="GitHub forks" src="https://img.shields.io/github/forks/seachal/OCustomTabLayout?style=social"></a>
+  <a href="https://github.com/seachal/OCustomTabLayout/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/github/license/seachal/OCustomTabLayout"></a>
   <img alt="Android API" src="https://img.shields.io/badge/API-16%2B-brightgreen.svg?style=flat">
-  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/seachal/FlexTabber">
+  <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/seachal/OCustomTabLayout">
 </p>
 
 <p align="center">
@@ -30,12 +30,12 @@
 </p>
 
 <p align="center">
-  <img src="art/preview.gif" width="300" alt="FlexTabber Demo"/>
+  <img src="art/preview.gif" width="300" alt="OCustomTabLayout Demo"/>
 </p>
 
-## Why FlexTabber?
+## Why OCustomTabLayout?
 
-FlexTabber is designed to solve the common issues with Android TabLayouts while providing superior customization options and performance. Unlike traditional tab layouts, FlexTabber:
+OCustomTabLayout is designed to solve the common issues with Android TabLayouts while providing superior customization options and performance. Unlike traditional tab layouts, OCustomTabLayout:
 
 - ✅ Allows for **completely custom tab indicators** (arc, dot, line, or any shape you can imagine)
 - ✅ Uses a **RecyclerView-based** architecture for optimal performance even with many tabs
@@ -59,9 +59,9 @@ FlexTabber is designed to solve the common issues with Android TabLayouts while 
 ## Demo
 
 <p align="center">
-  <img src="art/demo1.png" width="200" alt="FlexTabber Demo 1"/>
-  <img src="art/demo2.png" width="200" alt="FlexTabber Demo 2"/>
-  <img src="art/demo3.png" width="200" alt="FlexTabber Demo 3"/>
+  <img src="art/demo1.png" width="200" alt="OCustomTabLayout Demo 1"/>
+  <img src="art/demo2.png" width="200" alt="OCustomTabLayout Demo 2"/>
+  <img src="art/demo3.png" width="200" alt="OCustomTabLayout Demo 3"/>
 </p>
 
 ## Installation
@@ -72,7 +72,7 @@ Add the dependency to your app-level build.gradle file:
 
 ```gradle
 dependencies {
-    implementation 'com.github.seachal:flextabber:1.0.0'
+    implementation 'com.github.seachal:OCustomTabLayout:1.0.0'
 }
 ```
 
@@ -81,7 +81,7 @@ dependencies {
 ```xml
 <dependency>
   <groupId>com.github.seachal</groupId>
-  <artifactId>flextabber</artifactId>
+  <artifactId>OCustomTabLayout</artifactId>
   <version>1.0.0</version>
   <type>aar</type>
 </dependency>
@@ -91,10 +91,10 @@ dependencies {
 
 ### Basic Implementation
 
-1. **Add FlexTabber to your layout:**
+1. **Add OCustomTabLayout to your layout:**
 
 ```xml
-<com.seachal.flextabber.FlexTabber
+<com.seachal.OCustomTabLayout.OCustomTabLayout
     android:id="@+id/flex_tabber"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -112,10 +112,10 @@ dependencies {
 
 ```kotlin
 // Initialize with tab titles
-flexTabber.setTabs(listOf("Monthly", "Midterm", "Final", "Mock", "Exam"))
+OCustomTabLayout.setTabs(listOf("Monthly", "Midterm", "Final", "Mock", "Exam"))
 
 // Set tab selection listener
-flexTabber.setOnTabSelectedListener { position ->
+OCustomTabLayout.setOnTabSelectedListener { position ->
     // Handle tab selection
     viewPager.currentItem = position
 }
@@ -124,10 +124,10 @@ flexTabber.setOnTabSelectedListener { position ->
 ### Integration with ViewPager2
 
 ```kotlin
-// Link ViewPager2 with FlexTabber
+// Link ViewPager2 with OCustomTabLayout
 viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
     override fun onPageSelected(position: Int) {
-        flexTabber.selectTab(position)
+        OCustomTabLayout.selectTab(position)
     }
 })
 ```
@@ -169,10 +169,10 @@ viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback
 </vector>
 ```
 
-3. **Apply the custom indicator to FlexTabber:**
+3. **Apply the custom indicator to OCustomTabLayout:**
 
 ```xml
-<com.seachal.flextabber.FlexTabber
+<com.seachal.OCustomTabLayout.OCustomTabLayout
     ...
     app:indicatorLayout="@layout/arc_indicator"
     app:indicatorImageViewId="@id/custom_indicator_image"/>
@@ -193,7 +193,7 @@ viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback
 
 ## Performance Optimizations
 
-FlexTabber employs several optimizations for maximum performance:
+OCustomTabLayout employs several optimizations for maximum performance:
 
 - 🔄 **RecyclerView Recycling**: Efficient view recycling minimizes memory usage
 - 🖥️ **Hardware Acceleration**: Enabled by default for smooth animations
@@ -204,7 +204,7 @@ FlexTabber employs several optimizations for maximum performance:
 
 ## Documentation
 
-For complete documentation, check out our [Wiki](https://github.com/seachal/FlexTabber/wiki) or see the JavaDoc comments in the source code.
+For complete documentation, check out our [Wiki](https://github.com/seachal/OCustomTabLayout/wiki) or see the JavaDoc comments in the source code.
 
 ## Contribution
 
@@ -218,19 +218,19 @@ Contributions are welcome! If you have a bug report, feature request, or would l
 
 ## License
 
-FlexTabber is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
+OCustomTabLayout is available under the MIT license. See the [LICENSE](LICENSE) file for more info.
 
 ---
 
-# FlexTabber (中文文档)
+# OCustomTabLayout (中文文档)
 
 <p align="center">
   <strong>🚀 高性能、完全可自定义的Android标签布局，具有流畅的动画和独特的指示器设计</strong>
 </p>
 
-## 为什么选择FlexTabber？
+## 为什么选择OCustomTabLayout？
 
-FlexTabber旨在解决Android TabLayout的常见问题，同时提供卓越的自定义选项和性能。与传统的标签布局不同，FlexTabber:
+OCustomTabLayout旨在解决Android TabLayout的常见问题，同时提供卓越的自定义选项和性能。与传统的标签布局不同，OCustomTabLayout:
 
 - ✅ 允许**完全自定义标签指示器**（弧形、圆点、线条或任何你能想象的形状）
 - ✅ 使用**基于RecyclerView的**架构，即使有很多标签也能保持最佳性能
@@ -254,9 +254,9 @@ FlexTabber旨在解决Android TabLayout的常见问题，同时提供卓越的�
 ## 演示
 
 <p align="center">
-  <img src="art/demo1.png" width="200" alt="FlexTabber 演示 1"/>
-  <img src="art/demo2.png" width="200" alt="FlexTabber 演示 2"/>
-  <img src="art/demo3.png" width="200" alt="FlexTabber 演示 3"/>
+  <img src="art/demo1.png" width="200" alt="OCustomTabLayout 演示 1"/>
+  <img src="art/demo2.png" width="200" alt="OCustomTabLayout 演示 2"/>
+  <img src="art/demo3.png" width="200" alt="OCustomTabLayout 演示 3"/>
 </p>
 
 ## 安装
@@ -267,7 +267,7 @@ FlexTabber旨在解决Android TabLayout的常见问题，同时提供卓越的�
 
 ```gradle
 dependencies {
-    implementation 'com.github.seachal:flextabber:1.0.0'
+    implementation 'com.github.seachal:OCustomTabLayout:1.0.0'
 }
 ```
 
@@ -276,7 +276,7 @@ dependencies {
 ```xml
 <dependency>
   <groupId>com.github.seachal</groupId>
-  <artifactId>flextabber</artifactId>
+  <artifactId>OCustomTabLayout</artifactId>
   <version>1.0.0</version>
   <type>aar</type>
 </dependency>
@@ -286,10 +286,10 @@ dependencies {
 
 ### 基本实现
 
-1. **将FlexTabber添加到你的布局中:**
+1. **将OCustomTabLayout添加到你的布局中:**
 
 ```xml
-<com.seachal.flextabber.FlexTabber
+<com.seachal.OCustomTabLayout.OCustomTabLayout
     android:id="@+id/flex_tabber"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -307,10 +307,10 @@ dependencies {
 
 ```kotlin
 // 初始化标签标题
-flexTabber.setTabs(listOf("月考", "期中", "期末", "模考", "高考"))
+OCustomTabLayout.setTabs(listOf("月考", "期中", "期末", "模考", "高考"))
 
 // 设置标签选择监听器
-flexTabber.setOnTabSelectedListener { position ->
+OCustomTabLayout.setOnTabSelectedListener { position ->
     // 处理标签选择
     viewPager.currentItem = position
 }
@@ -319,10 +319,10 @@ flexTabber.setOnTabSelectedListener { position ->
 ### 与ViewPager2集成
 
 ```kotlin
-// 将ViewPager2与FlexTabber关联
+// 将ViewPager2与OCustomTabLayout关联
 viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
     override fun onPageSelected(position: Int) {
-        flexTabber.selectTab(position)
+        OCustomTabLayout.selectTab(position)
     }
 })
 ```
@@ -364,10 +364,10 @@ viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback
 </vector>
 ```
 
-3. **将自定义指示器应用于FlexTabber:**
+3. **将自定义指示器应用于OCustomTabLayout:**
 
 ```xml
-<com.seachal.flextabber.FlexTabber
+<com.seachal.OCustomTabLayout.OCustomTabLayout
     ...
     app:indicatorLayout="@layout/arc_indicator"
     app:indicatorImageViewId="@id/custom_indicator_image"/>
@@ -388,7 +388,7 @@ viewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback
 
 ## 性能优化
 
-FlexTabber采用了几项优化以获得最大性能：
+OCustomTabLayout采用了几项优化以获得最大性能：
 
 - 🔄 **RecyclerView回收**：高效的视图回收机制最小化内存使用
 - 🖥️ **硬件加速**：默认启用以实现流畅动画
@@ -399,7 +399,7 @@ FlexTabber采用了几项优化以获得最大性能：
 
 ## 文档
 
-完整文档，请查看我们的[Wiki](https://github.com/seachal/FlexTabber/wiki)或查看源代码中的JavaDoc注释。
+完整文档，请查看我们的[Wiki](https://github.com/seachal/OCustomTabLayout/wiki)或查看源代码中的JavaDoc注释。
 
 ## 贡献
 
@@ -413,4 +413,4 @@ FlexTabber采用了几项优化以获得最大性能：
 
 ## 许可证
 
-FlexTabber基于MIT许可证提供。有关更多信息，请参阅[LICENSE](LICENSE)文件。 
+OCustomTabLayout基于MIT许可证提供。有关更多信息，请参阅[LICENSE](LICENSE)文件。 
